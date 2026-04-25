@@ -1,0 +1,108 @@
+{
+  "users": [
+    {
+      "id": "user-1",
+      "email": "student@example.com",
+      "password": "password123",
+      "name": "Павел"
+    },
+    {
+      "id": "user-2",
+      "email": "demo@example.com",
+      "password": "password123",
+      "name": "Демо пользователь"
+    }
+  ],
+  "categories": [
+    {
+      "id": "cat-services",
+      "userId": "user-1",
+      "name": "Сервисы",
+      "color": "#27725c",
+      "monthlyLimit": 2500
+    },
+    {
+      "id": "cat-entertainment",
+      "userId": "user-1",
+      "name": "Развлечения",
+      "color": "#5b6fb3",
+      "monthlyLimit": 1800
+    },
+    {
+      "id": "cat-utilities",
+      "userId": "user-1",
+      "name": "Утилиты",
+      "color": "#c8843f",
+      "monthlyLimit": 1200
+    },
+    {
+      "id": "cat-demo",
+      "userId": "user-2",
+      "name": "Демо",
+      "color": "#27725c",
+      "monthlyLimit": 1000
+    }
+  ],
+  "subscriptions": [
+    {
+      "id": "sub-spotify",
+      "userId": "user-1",
+      "title": "Spotify",
+      "cost": 499,
+      "currency": "RUB",
+      "billingPeriod": "monthly",
+      "nextPaymentDate": "2026-04-29",
+      "categoryId": "cat-entertainment",
+      "status": "active",
+      "reminderDaysBefore": 7
+    },
+    {
+      "id": "sub-github",
+      "userId": "user-1",
+      "title": "GitHub Copilot",
+      "cost": 1000,
+      "currency": "RUB",
+      "billingPeriod": "monthly",
+      "nextPaymentDate": "2026-05-02",
+      "categoryId": "cat-services",
+      "status": "active",
+      "reminderDaysBefore": 5
+    },
+    {
+      "id": "sub-cloud",
+      "userId": "user-1",
+      "title": "Cloud Storage",
+      "cost": 2390,
+      "currency": "RUB",
+      "billingPeriod": "yearly",
+      "nextPaymentDate": "2026-05-18",
+      "categoryId": "cat-utilities",
+      "status": "active",
+      "reminderDaysBefore": 10
+    },
+    {
+      "id": "sub-old",
+      "userId": "user-1",
+      "title": "Old Streaming",
+      "cost": 799,
+      "currency": "RUB",
+      "billingPeriod": "monthly",
+      "nextPaymentDate": "2026-05-10",
+      "categoryId": "cat-entertainment",
+      "status": "inactive",
+      "reminderDaysBefore": 3
+    },
+    {
+      "id": "sub-demo",
+      "userId": "user-2",
+      "title": "Demo Cloud",
+      "cost": 500,
+      "currency": "RUB",
+      "billingPeriod": "monthly",
+      "nextPaymentDate": "2026-05-01",
+      "categoryId": "cat-demo",
+      "status": "active",
+      "reminderDaysBefore": 5
+    }
+  ]
+}
