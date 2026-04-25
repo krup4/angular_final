@@ -1,10 +1,36 @@
-const { readFileSync } = require('node:fs');
+const { readFileSync, writeFileSync } = require('node:fs');
 const { join } = require('node:path');
 
 const dbPath = join(process.cwd(), 'mock-server', 'db.json');
+const storeKey = '__subscriptionManagerMockDb';
+
+function getStore() {
+  if (!globalThis[storeKey]) {
+    globalThis[storeKey] = { db: null };
+  }
+
+  return globalThis[storeKey];
+}
 
 function loadDb() {
-  return JSON.parse(readFileSync(dbPath, 'utf8'));
+  const store = getStore();
+
+  if (!store.db) {
+    store.db = JSON.parse(readFileSync(dbPath, 'utf8'));
+  }
+
+  return store.db;
+}
+
+function saveDb(db) {
+  const store = getStore();
+  store.db = db;
+
+  if (process.env.VERCEL) {
+    return;
+  }
+
+  writeFileSync(dbPath, `${JSON.stringify(db, null, 2)}\n`);
 }
 
 function readBody(req) {
@@ -59,5 +85,6 @@ module.exports = {
   handleOptions,
   loadDb,
   readBody,
+  saveDb,
   sendJson,
 };

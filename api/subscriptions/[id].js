@@ -1,6 +1,4 @@
-const { applyCors, handleOptions, loadDb, readBody, sendJson } = require('../../mock-server/vercel-utils.cjs');
-
-let subscriptions = loadDb().subscriptions;
+const { applyCors, handleOptions, loadDb, readBody, saveDb, sendJson } = require('../../mock-server/vercel-utils.cjs');
 
 module.exports = async function handler(req, res) {
   applyCors(res);
@@ -12,23 +10,26 @@ module.exports = async function handler(req, res) {
   try {
     const { id } = req.query;
     const subscriptionId = Array.isArray(id) ? id[0] : id;
+    const db = loadDb();
 
     if (req.method === 'PUT') {
       const updated = await readBody(req);
-      const index = subscriptions.findIndex((item) => item.id === subscriptionId);
+      const index = db.subscriptions.findIndex((item) => item.id === subscriptionId);
 
       if (index === -1) {
         sendJson(res, 404, { message: 'Подписка не найдена' });
         return;
       }
 
-      subscriptions[index] = { ...updated, id: subscriptionId };
-      sendJson(res, 200, subscriptions[index]);
+      db.subscriptions[index] = { ...updated, id: subscriptionId };
+      saveDb(db);
+      sendJson(res, 200, db.subscriptions[index]);
       return;
     }
 
     if (req.method === 'DELETE') {
-      subscriptions = subscriptions.filter((item) => item.id !== subscriptionId);
+      db.subscriptions = db.subscriptions.filter((item) => item.id !== subscriptionId);
+      saveDb(db);
       res.statusCode = 204;
       res.end();
       return;

@@ -57,4 +57,6 @@ CI настроен в GitHub Actions: lint, unit tests, build, optional Vercel 
 - `VERCEL_ORG_ID`
 - `VERCEL_PROJECT_ID`
 
+На Vercel фронтенд и mock API деплоятся одним проектом: Angular собирается как статический сайт, а `api/` работает как backend на serverless-функциях.
+
 Публичный URL после деплоя: `https://angular-final-94l8.vercel.app/`.

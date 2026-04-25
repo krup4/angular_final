@@ -1,7 +1,5 @@
 const { randomUUID } = require('node:crypto');
-const { applyCors, handleOptions, loadDb, readBody, sendJson } = require('../mock-server/vercel-utils.cjs');
-
-let subscriptions = loadDb().subscriptions;
+const { applyCors, handleOptions, loadDb, readBody, saveDb, sendJson } = require('../mock-server/vercel-utils.cjs');
 
 module.exports = async function handler(req, res) {
   applyCors(res);
@@ -12,12 +10,13 @@ module.exports = async function handler(req, res) {
 
   try {
     const url = new URL(req.url, `http://${req.headers.host}`);
+    const db = loadDb();
 
     if (req.method === 'GET') {
       sendJson(
         res,
         200,
-        subscriptions.filter((item) => item.userId === url.searchParams.get('userId')),
+        db.subscriptions.filter((item) => item.userId === url.searchParams.get('userId')),
       );
       return;
     }
@@ -25,7 +24,8 @@ module.exports = async function handler(req, res) {
     if (req.method === 'POST') {
       const draft = await readBody(req);
       const created = { ...draft, id: randomUUID(), currency: 'RUB' };
-      subscriptions.push(created);
+      db.subscriptions.push(created);
+      saveDb(db);
       sendJson(res, 201, created);
       return;
     }
