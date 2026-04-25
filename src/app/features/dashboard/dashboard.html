@@ -8,7 +8,7 @@
   </header>
 
   @if (store.error()) {
-    <p tuiNotification appearance="negative">{{ store.error() }}</p>
+    <tui-notification appearance="negative">{{ store.error() }}</tui-notification>
   }
 
   <tui-loader [showLoader]="store.loading()" size="l">

@@ -8,7 +8,7 @@
   </header>
 
   @if (store.error()) {
-    <p tuiNotification appearance="negative">{{ store.error() }}</p>
+    <tui-notification appearance="negative">{{ store.error() }}</tui-notification>
   }
 
   <section class="workspace">
@@ -67,9 +67,9 @@
       </label>
 
       @if (form.invalid && form.touched) {
-        <p tuiNotification appearance="warning" size="s">
+        <tui-notification appearance="warning" size="s">
           Заполните название, стоимость, дату платежа и категорию.
-        </p>
+        </tui-notification>
       }
 
       <div class="actions">

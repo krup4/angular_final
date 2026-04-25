@@ -20,13 +20,13 @@
       </label>
 
       @if (form.invalid && form.touched) {
-        <p tuiNotification appearance="warning" size="s">
+        <tui-notification appearance="warning" size="s">
           Проверьте email и пароль: пароль должен быть не короче 6 символов.
-        </p>
+        </tui-notification>
       }
 
       @if (error()) {
-        <p tuiNotification appearance="negative" size="s">{{ error() }}</p>
+        <tui-notification appearance="negative" size="s">{{ error() }}</tui-notification>
       }
 
       <button tuiButton type="submit" size="l" [disabled]="loading()">
