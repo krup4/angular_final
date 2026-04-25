@@ -45,18 +45,6 @@
   ],
   "subscriptions": [
     {
-      "id": "sub-spotify",
-      "userId": "user-1",
-      "title": "Spotify",
-      "cost": 499,
-      "currency": "RUB",
-      "billingPeriod": "monthly",
-      "nextPaymentDate": "2026-04-29",
-      "categoryId": "cat-entertainment",
-      "status": "active",
-      "reminderDaysBefore": 7
-    },
-    {
       "id": "sub-github",
       "userId": "user-1",
       "title": "GitHub Copilot",
