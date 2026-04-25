@@ -1,0 +1,78 @@
+<main class="page" aria-labelledby="dashboard-title">
+  <header class="page-header">
+    <div>
+      <p class="eyebrow">Обзор</p>
+      <h1 id="dashboard-title">Регулярные платежи</h1>
+    </div>
+    <p>Активных подписок: <strong>{{ store.activeSubscriptions().length }}</strong></p>
+  </header>
+
+  @if (store.error()) {
+    <p tuiNotification appearance="negative">{{ store.error() }}</p>
+  }
+
+  <tui-loader [showLoader]="store.loading()" size="l">
+    <section class="stats" aria-label="Ключевые показатели">
+      <article>
+        <span>Расходы в месяц</span>
+        <strong>{{ money(store.monthlyTotal()) }}</strong>
+      </article>
+      <article>
+        <span>Ближайшие уведомления</span>
+        <strong>{{ store.upcomingPayments().length }}</strong>
+      </article>
+      <article>
+        <span>Категорий с превышением</span>
+        <strong>{{ overLimitCount() }}</strong>
+      </article>
+    </section>
+
+    <section class="grid">
+      <article class="panel">
+        <h2>Ближайшие платежи</h2>
+        <div class="list">
+          @for (subscription of store.upcomingPayments(); track subscription.id) {
+            <div class="payment">
+              <div>
+                <strong>{{ subscription.title }}</strong>
+                <span>{{ categoryName(subscription.categoryId) }}</span>
+              </div>
+              <div class="right">
+                <span tuiBadge appearance="warning">
+                  {{ daysLeft(subscription.nextPaymentDate) }} дн.
+                </span>
+                <span>{{ subscription.nextPaymentDate | date: 'dd.MM.yyyy' }}</span>
+              </div>
+            </div>
+          } @empty {
+            <p class="muted">Нет платежей, требующих уведомления.</p>
+          }
+        </div>
+      </article>
+
+      <article class="panel">
+        <h2>Лимиты категорий</h2>
+        <div class="list">
+          @for (total of store.categoryTotals(); track total.category.id) {
+            <div class="limit">
+              <div class="limit-row">
+                <strong>{{ total.category.name }}</strong>
+                <span [class.danger]="total.isOverLimit">
+                  {{ money(total.total) }} / {{ money(total.category.monthlyLimit) }}
+                </span>
+              </div>
+              <progress
+                tuiProgressBar
+                size="s"
+                max="100"
+                [value]="total.limitUsage > 100 ? 100 : total.limitUsage"
+                [color]="total.isOverLimit ? '#c9524a' : total.category.color"
+                [attr.aria-label]="'Использование лимита ' + total.category.name"
+              ></progress>
+            </div>
+          }
+        </div>
+      </article>
+    </section>
+  </tui-loader>
+</main>

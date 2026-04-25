@@ -1,0 +1,20 @@
+<div class="shell">
+  <header class="topbar">
+    <a class="brand" routerLink="/dashboard" aria-label="Subscription Manager">
+      <span class="brand-mark">SM</span>
+      <span>Subscription Manager</span>
+    </a>
+
+    <nav aria-label="Основная навигация">
+      <a routerLink="/dashboard" routerLinkActive="active">Дашборд</a>
+      <a routerLink="/subscriptions" routerLinkActive="active">Подписки</a>
+    </nav>
+
+    <div class="profile">
+      <span>{{ auth.user()?.name }}</span>
+      <button tuiButton appearance="secondary" size="s" type="button" (click)="logout()">Выйти</button>
+    </div>
+  </header>
+
+  <router-outlet />
+</div>
