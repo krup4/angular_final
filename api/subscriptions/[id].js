@@ -10,7 +10,7 @@ module.exports = async function handler(req, res) {
   try {
     const { id } = req.query;
     const subscriptionId = Array.isArray(id) ? id[0] : id;
-    const db = loadDb();
+    const db = await loadDb();
 
     if (req.method === 'PUT') {
       const updated = await readBody(req);
@@ -22,14 +22,14 @@ module.exports = async function handler(req, res) {
       }
 
       db.subscriptions[index] = { ...updated, id: subscriptionId };
-      saveDb(db);
+      await saveDb(db);
       sendJson(res, 200, db.subscriptions[index]);
       return;
     }
 
     if (req.method === 'DELETE') {
       db.subscriptions = db.subscriptions.filter((item) => item.id !== subscriptionId);
-      saveDb(db);
+      await saveDb(db);
       sendJson(res, 200, { id: subscriptionId });
       return;
     }

@@ -1,32 +1,59 @@
 const { readFileSync, writeFileSync } = require('node:fs');
 const { join } = require('node:path');
+const { get, put } = require('@vercel/blob');
 
 const dbPath = join(process.cwd(), 'mock-server', 'db.json');
-const storeKey = '__subscriptionManagerMockDb';
+const blobPath = 'subscription-manager/mock-server/db.json';
 
-function getStore() {
-  if (!globalThis[storeKey]) {
-    globalThis[storeKey] = { db: null };
-  }
-
-  return globalThis[storeKey];
+function shouldUseBlobStore() {
+  return Boolean(process.env.VERCEL && process.env.BLOB_READ_WRITE_TOKEN);
 }
 
-function loadDb() {
-  const store = getStore();
-
-  if (!store.db) {
-    store.db = JSON.parse(readFileSync(dbPath, 'utf8'));
+function assertBlobConfigured() {
+  if (process.env.VERCEL && !process.env.BLOB_READ_WRITE_TOKEN) {
+    throw new Error('BLOB_READ_WRITE_TOKEN is required for persistent mock data in Vercel');
   }
-
-  return store.db;
 }
 
-function saveDb(db) {
-  const store = getStore();
-  store.db = db;
+async function loadDb() {
+  assertBlobConfigured();
 
-  if (process.env.VERCEL) {
+  if (!shouldUseBlobStore()) {
+    return cloneDb(readLocalDb());
+  }
+
+  const blob = await get(blobPath, { access: 'private' });
+
+  if (!blob) {
+    const initialDb = readLocalDb();
+
+    await put(blobPath, JSON.stringify(initialDb, null, 2), {
+      access: 'private',
+      allowOverwrite: true,
+      contentType: 'application/json',
+    });
+
+    return cloneDb(initialDb);
+  }
+
+  if (!blob.stream) {
+    return cloneDb(readLocalDb());
+  }
+
+  const text = await new Response(blob.stream).text();
+
+  return cloneDb(JSON.parse(text));
+}
+
+async function saveDb(db) {
+  assertBlobConfigured();
+
+  if (shouldUseBlobStore()) {
+    await put(blobPath, JSON.stringify(db, null, 2), {
+      access: 'private',
+      allowOverwrite: true,
+      contentType: 'application/json',
+    });
     return;
   }
 
@@ -78,6 +105,14 @@ function handleOptions(req, res) {
 function sendJson(res, status, body) {
   res.statusCode = status;
   res.end(body === null ? '' : JSON.stringify(body));
+}
+
+function readLocalDb() {
+  return JSON.parse(readFileSync(dbPath, 'utf8'));
+}
+
+function cloneDb(db) {
+  return JSON.parse(JSON.stringify(db));
 }
 
 module.exports = {

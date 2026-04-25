@@ -14,7 +14,7 @@ module.exports = async function handler(req, res) {
 
   try {
     const credentials = await readBody(req);
-    const db = loadDb();
+    const db = await loadDb();
     const user = db.users.find(
       (item) => item.email === credentials.email && item.password === credentials.password,
     );

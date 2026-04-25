@@ -1,6 +1,6 @@
 const { applyCors, handleOptions, loadDb, sendJson } = require('../mock-server/vercel-utils.cjs');
 
-module.exports = function handler(req, res) {
+module.exports = async function handler(req, res) {
   applyCors(res);
 
   if (handleOptions(req, res)) {
@@ -13,7 +13,7 @@ module.exports = function handler(req, res) {
   }
 
   const url = new URL(req.url, `http://${req.headers.host}`);
-  const db = loadDb();
+  const db = await loadDb();
 
   sendJson(
     res,

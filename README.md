@@ -60,3 +60,5 @@ CI настроен в GitHub Actions: lint, unit tests, build, optional Vercel 
 На Vercel фронтенд и mock API деплоятся одним проектом: Angular собирается как статический сайт, а `api/` работает как backend на serverless-функциях.
 
 Публичный URL после деплоя: `https://angular-final-94l8.vercel.app/`.
+
+Для сохранения mock-данных в Vercel нужен Blob store в том же проекте. После подключения Vercel сам добавит `BLOB_READ_WRITE_TOKEN`, и CRUD перестанет теряться после refresh.

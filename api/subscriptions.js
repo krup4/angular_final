@@ -10,7 +10,7 @@ module.exports = async function handler(req, res) {
 
   try {
     const url = new URL(req.url, `http://${req.headers.host}`);
-    const db = loadDb();
+    const db = await loadDb();
 
     if (req.method === 'GET') {
       sendJson(
@@ -25,7 +25,7 @@ module.exports = async function handler(req, res) {
       const draft = await readBody(req);
       const created = { ...draft, id: randomUUID(), currency: 'RUB' };
       db.subscriptions.push(created);
-      saveDb(db);
+      await saveDb(db);
       sendJson(res, 201, created);
       return;
     }
