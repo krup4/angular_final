@@ -1,0 +1,199 @@
+<main class="page" aria-labelledby="subscriptions-title">
+  <header class="page-header">
+    <div>
+      <p class="eyebrow">CRUD</p>
+      <h1 id="subscriptions-title">Подписки</h1>
+    </div>
+    <p>Найдено: <strong>{{ store.filteredSubscriptions().length }}</strong></p>
+  </header>
+
+  @if (store.error()) {
+    <tui-notification appearance="negative">{{ store.error() }}</tui-notification>
+  }
+
+  <section class="workspace">
+    <form [formGroup]="form" (ngSubmit)="save()" class="panel form" aria-label="Форма подписки">
+      <h2>{{ editing() ? 'Редактировать подписку' : 'Новая подписка' }}</h2>
+
+      <label>
+        Название
+        <input formControlName="title" placeholder="Spotify, Netflix, Yandex Plus" />
+      </label>
+
+      <div class="two">
+        <label>
+          Стоимость
+          <input type="number" min="1" formControlName="cost" />
+        </label>
+
+        <label>
+          Периодичность
+          <select formControlName="billingPeriod">
+            @for (period of periods; track period.value) {
+              <option [value]="period.value">{{ period.label }}</option>
+            }
+          </select>
+        </label>
+      </div>
+
+      <div class="two">
+        <label>
+          Следующий платеж
+          <input type="date" formControlName="nextPaymentDate" />
+        </label>
+
+        <label>
+          Напомнить за дней
+          <input type="number" min="0" max="30" formControlName="reminderDaysBefore" />
+        </label>
+      </div>
+
+      <label>
+        Категория
+        <select formControlName="categoryId">
+          <option value="" disabled>Выберите категорию</option>
+          @for (category of store.categories(); track category.id) {
+            <option [value]="category.id">{{ category.name }}</option>
+          }
+        </select>
+      </label>
+
+      <label>
+        Статус
+        <select formControlName="status">
+          <option value="active">Активная</option>
+          <option value="inactive">Неактивная</option>
+        </select>
+      </label>
+
+      @if (form.invalid && form.touched) {
+        <tui-notification appearance="warning" size="s">
+          Заполните название, стоимость, дату платежа и категорию.
+        </tui-notification>
+      }
+
+      <div class="actions">
+        <button tuiButton type="submit" [disabled]="store.saving()">
+          {{ editing() ? 'Сохранить' : 'Добавить' }}
+        </button>
+        @if (editing()) {
+          <button tuiButton appearance="secondary" type="button" (click)="cancelEdit()">Отмена</button>
+        }
+      </div>
+    </form>
+
+    <section class="panel list-panel" aria-label="Список подписок">
+      <div class="filters">
+        <label>
+          Поиск
+          <input
+            #query
+            type="search"
+            placeholder="Название подписки"
+            [value]="store.filters().query"
+            (input)="store.updateFilters({ query: query.value })"
+          />
+        </label>
+
+        <label>
+          Категория
+          <select
+            [value]="store.filters().categoryId"
+            (change)="store.updateFilters({ categoryId: $any($event.target).value })"
+          >
+            <option value="">Все</option>
+            @for (category of store.categories(); track category.id) {
+              <option [value]="category.id">{{ category.name }}</option>
+            }
+          </select>
+        </label>
+
+        <label>
+          Статус
+          <select
+            [value]="store.filters().status"
+            (change)="store.updateFilters({ status: $any($event.target).value })"
+          >
+            <option value="all">Все</option>
+            <option value="active">Активные</option>
+            <option value="inactive">Неактивные</option>
+          </select>
+        </label>
+
+        <label>
+          Сортировка
+          <select
+            [value]="store.filters().sort"
+            (change)="store.updateFilters({ sort: $any($event.target).value })"
+          >
+            <option value="nextPaymentAsc">Ближайший платеж</option>
+            <option value="costDesc">Стоимость по убыванию</option>
+            <option value="titleAsc">Название А-Я</option>
+          </select>
+        </label>
+      </div>
+
+      <tui-loader [showLoader]="store.loading()" size="l">
+        <div class="cards">
+          @for (subscription of store.filteredSubscriptions(); track subscription.id) {
+            <article class="subscription">
+              <div class="subscription-main">
+                <div>
+                  <h3>{{ subscription.title }}</h3>
+                  <span>{{ categoryName(subscription.categoryId) }}</span>
+                </div>
+                <span
+                  tuiBadge
+                  [appearance]="subscription.status === 'active' ? 'positive' : 'neutral'"
+                >
+                  {{ subscription.status === 'active' ? 'Активная' : 'Неактивная' }}
+                </span>
+              </div>
+
+              <dl>
+                <div>
+                  <dt>Платеж</dt>
+                  <dd>{{ money(subscription.cost) }}</dd>
+                </div>
+                <div>
+                  <dt>В месяц</dt>
+                  <dd>{{ money(monthlyCost(subscription)) }}</dd>
+                </div>
+                <div>
+                  <dt>Следующий</dt>
+                  <dd>{{ subscription.nextPaymentDate | date: 'dd.MM.yyyy' }}</dd>
+                </div>
+              </dl>
+
+              <div class="card-actions">
+                <button tuiButton appearance="secondary" size="s" type="button" (click)="edit(subscription)">
+                  Изменить
+                </button>
+                <button
+                  tuiButton
+                  appearance="secondary"
+                  size="s"
+                  type="button"
+                  (click)="toggleStatus(subscription)"
+                >
+                  {{ subscription.status === 'active' ? 'Деактивировать' : 'Активировать' }}
+                </button>
+                <button
+                  tuiButton
+                  appearance="primary-destructive"
+                  size="s"
+                  type="button"
+                  (click)="remove(subscription)"
+                >
+                  Удалить
+                </button>
+              </div>
+            </article>
+          } @empty {
+            <p class="empty">Подписок по выбранным фильтрам нет.</p>
+          }
+        </div>
+      </tui-loader>
+    </section>
+  </section>
+</main>

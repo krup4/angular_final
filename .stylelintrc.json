@@ -1,0 +1,14 @@
+{
+  "extends": ["stylelint-config-standard-scss"],
+  "rules": {
+    "alpha-value-notation": null,
+    "color-function-alias-notation": null,
+    "color-function-notation": null,
+    "color-hex-length": null,
+    "media-feature-range-notation": null,
+    "no-empty-source": null,
+    "scss/load-partial-extension": null,
+    "selector-class-pattern": null,
+    "custom-property-pattern": null
+  }
+}
