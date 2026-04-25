@@ -19,8 +19,9 @@ module.exports = async function handler(req, res) {
 
   try {
     const url = new URL(req.url, `http://${req.headers.host}`);
+    const pathname = normalizePath(url.pathname);
 
-    if (req.method === 'POST' && url.pathname === '/api/auth/login') {
+    if (req.method === 'POST' && pathname === '/auth/login') {
       const credentials = await readBody(req);
       const user = db.users.find(
         (item) => item.email === credentials.email && item.password === credentials.password,
@@ -39,7 +40,7 @@ module.exports = async function handler(req, res) {
       return;
     }
 
-    if (req.method === 'GET' && url.pathname === '/api/categories') {
+    if (req.method === 'GET' && pathname === '/categories') {
       sendJson(
         res,
         200,
@@ -48,7 +49,7 @@ module.exports = async function handler(req, res) {
       return;
     }
 
-    if (req.method === 'GET' && url.pathname === '/api/subscriptions') {
+    if (req.method === 'GET' && pathname === '/subscriptions') {
       sendJson(
         res,
         200,
@@ -57,7 +58,7 @@ module.exports = async function handler(req, res) {
       return;
     }
 
-    if (req.method === 'POST' && url.pathname === '/api/subscriptions') {
+    if (req.method === 'POST' && pathname === '/subscriptions') {
       const draft = await readBody(req);
       const created = { ...draft, id: randomUUID(), currency: 'RUB' };
       db.subscriptions.push(created);
@@ -65,7 +66,7 @@ module.exports = async function handler(req, res) {
       return;
     }
 
-    const subscriptionMatch = url.pathname.match(/^\/api\/subscriptions\/([^/]+)$/);
+    const subscriptionMatch = pathname.match(/^\/subscriptions\/([^/]+)$/);
 
     if (subscriptionMatch && req.method === 'PUT') {
       const id = subscriptionMatch[1];
@@ -123,6 +124,18 @@ function readBody(req) {
 
     req.on('error', reject);
   });
+}
+
+function normalizePath(pathname) {
+  if (pathname === '/api') {
+    return '/';
+  }
+
+  if (pathname.startsWith('/api/')) {
+    return pathname.slice(4);
+  }
+
+  return pathname;
 }
 
 function sendJson(res, status, body) {
