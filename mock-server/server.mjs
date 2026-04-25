@@ -87,7 +87,7 @@ const server = createServer(async (request, response) => {
       const id = subscriptionMatch[1];
       db.subscriptions = db.subscriptions.filter((item) => item.id !== id);
       await writeDb(db);
-      sendJson(response, 204, null);
+      sendJson(response, 200, { id });
       return;
     }
 

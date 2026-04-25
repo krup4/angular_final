@@ -30,8 +30,7 @@ module.exports = async function handler(req, res) {
     if (req.method === 'DELETE') {
       db.subscriptions = db.subscriptions.filter((item) => item.id !== subscriptionId);
       saveDb(db);
-      res.statusCode = 204;
-      res.end();
+      sendJson(res, 200, { id: subscriptionId });
       return;
     }
 

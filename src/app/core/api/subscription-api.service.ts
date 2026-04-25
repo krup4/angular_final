@@ -28,8 +28,8 @@ export class SubscriptionApiService {
     return this.http.put<Subscription>(`${this.apiUrl}/subscriptions/${subscription.id}`, subscription);
   }
 
-  deleteSubscription(id: string): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/subscriptions/${id}`);
+  deleteSubscription(id: string): Observable<{ id: string }> {
+    return this.http.delete<{ id: string }>(`${this.apiUrl}/subscriptions/${id}`);
   }
 
   getCategories(userId: string): Observable<Category[]> {
