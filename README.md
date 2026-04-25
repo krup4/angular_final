@@ -1,59 +1,60 @@
-# SubscriptionManager
+# Subscription Manager
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.1.1.
+Angular 21 приложение для учета подписок и регулярных платежей. Проект реализует тему 16: пользователь управляет подписками, видит месячные расходы, ближайшие платежи, категории и превышение лимитов.
 
-## Development server
+## Стек
 
-To start a local development server, run:
+- Angular 21, TypeScript, standalone components, lazy routes
+- Taiga UI 4
+- NgRx Signal Store
+- Mock API на Node.js
+- Jest unit tests, Playwright component/e2e scenarios
+- ESLint, Prettier, Stylelint
 
-```bash
-ng serve
-```
-
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+## Запуск
 
 ```bash
-ng generate component component-name
+npm install
+npm run dev
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+Приложение: `http://localhost:4200`
+
+Mock API: `http://localhost:3000`
+
+Демо-аккаунт:
+
+```text
+student@example.com
+password123
+```
+
+## Скрипты
 
 ```bash
-ng generate --help
+npm start          # Angular dev server with API proxy
+npm run mock      # Mock API
+npm run dev       # Angular + Mock API
+npm test          # Jest unit tests
+npm run test:e2e  # Playwright scenarios
+npm run lint      # ESLint + Stylelint
+npm run build     # Production build
 ```
 
-## Building
+## Архитектура
 
-To build the project run:
+- `src/app/core` — auth, guards, interceptors, API services, Signal Store.
+- `src/app/shared` — типы и расчетные функции.
+- `src/app/features` — login, shell, dashboard, subscriptions.
+- `mock-server` — mock данные и API endpoints.
+- `docs` — анализ продукта и UX-концепция.
 
-```bash
-ng build
-```
+## Деплой
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+CI настроен в GitHub Actions: lint, unit tests, build, optional Vercel deploy. Для деплоя нужно добавить repository secrets:
 
-## Running unit tests
+- `VERCEL_TOKEN`
+- `VERCEL_ORG_ID`
+- `VERCEL_PROJECT_ID`
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Публичный URL после деплоя: `TODO: добавить Vercel URL`.
