@@ -57,4 +57,4 @@ CI настроен в GitHub Actions: lint, unit tests, build, optional Vercel 
 - `VERCEL_ORG_ID`
 - `VERCEL_PROJECT_ID`
 
-Публичный URL после деплоя: `TODO: добавить Vercel URL`.
+Публичный URL после деплоя: `https://angular-final-94l8.vercel.app/`.
