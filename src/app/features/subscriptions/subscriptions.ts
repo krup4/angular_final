@@ -43,7 +43,7 @@ export class Subscriptions implements OnInit {
   });
 
   ngOnInit(): void {
-    void this.store.load();
+    void this.initialize();
   }
 
   protected categoryName(categoryId: string): string {
@@ -77,7 +77,7 @@ export class Subscriptions implements OnInit {
   }
 
   protected async save(): Promise<void> {
-    if (this.form.invalid) {
+    if (this.form.invalid || this.store.saving()) {
       this.form.markAllAsTouched();
 
       return;
@@ -85,15 +85,17 @@ export class Subscriptions implements OnInit {
 
     const draft = this.form.getRawValue() as SubscriptionDraft;
     const current = this.editing();
+    const saved = current
+      ? await this.store.update({ ...current, ...draft })
+      : await this.store.create(draft);
 
-    if (current) {
-      await this.store.update({ ...current, ...draft });
+    if (saved && current) {
       this.editing.set(null);
-    } else {
-      await this.store.create(draft);
     }
 
-    this.cancelEdit();
+    if (saved) {
+      this.cancelEdit();
+    }
   }
 
   protected async toggleStatus(subscription: Subscription): Promise<void> {
@@ -105,5 +107,13 @@ export class Subscriptions implements OnInit {
 
   protected async remove(subscription: Subscription): Promise<void> {
     await this.store.remove(subscription.id);
+  }
+
+  private async initialize(): Promise<void> {
+    await this.store.load();
+
+    if (!this.form.controls.categoryId.value) {
+      this.form.patchValue({ categoryId: this.store.categories()[0]?.id ?? '' });
+    }
   }
 }

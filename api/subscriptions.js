@@ -1,5 +1,6 @@
 const { randomUUID } = require('node:crypto');
 const { applyCors, handleOptions, loadDb, readBody, saveDb, sendJson } = require('../mock-server/vercel-utils.cjs');
+const { buildSubscription, isBadRequest } = require('../mock-server/subscription-utils.cjs');
 
 module.exports = async function handler(req, res) {
   applyCors(res);
@@ -23,7 +24,10 @@ module.exports = async function handler(req, res) {
 
     if (req.method === 'POST') {
       const draft = await readBody(req);
-      const created = { ...draft, id: randomUUID(), currency: 'RUB' };
+      const created = buildSubscription(draft, {
+        categories: db.categories,
+        id: randomUUID(),
+      });
       db.subscriptions.push(created);
       await saveDb(db);
       sendJson(res, 201, created);
@@ -32,6 +36,8 @@ module.exports = async function handler(req, res) {
 
     sendJson(res, 405, { message: 'Method not allowed' });
   } catch (error) {
-    sendJson(res, 500, { message: error instanceof Error ? error.message : 'Mock server error' });
+    sendJson(res, isBadRequest(error) ? 400 : 500, {
+      message: error instanceof Error ? error.message : 'Mock server error',
+    });
   }
 };

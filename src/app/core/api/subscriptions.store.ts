@@ -86,11 +86,11 @@ export const SubscriptionsStore = signalStore(
       }
     },
 
-    async create(draft: SubscriptionDraft): Promise<void> {
+    async create(draft: SubscriptionDraft): Promise<boolean> {
       const user = auth.user();
 
       if (!user) {
-        return;
+        return false;
       }
 
       patchState(store, { saving: true, error: null });
@@ -102,12 +102,14 @@ export const SubscriptionsStore = signalStore(
           subscriptions: [...store.subscriptions(), created],
           saving: false,
         });
+        return true;
       } catch (error) {
         patchState(store, { error: getErrorMessage(error), saving: false });
+        return false;
       }
     },
 
-    async update(subscription: Subscription): Promise<void> {
+    async update(subscription: Subscription): Promise<boolean> {
       patchState(store, { saving: true, error: null });
 
       try {
@@ -119,8 +121,10 @@ export const SubscriptionsStore = signalStore(
             .map((item) => (item.id === updated.id ? updated : item)),
           saving: false,
         });
+        return true;
       } catch (error) {
         patchState(store, { error: getErrorMessage(error), saving: false });
+        return false;
       }
     },
 
@@ -141,5 +145,5 @@ export const SubscriptionsStore = signalStore(
 );
 
 function getErrorMessage(error: unknown): string {
-  return error instanceof Error ? error.message : 'Не удалось загрузить данные';
+  return error instanceof Error ? error.message : 'Не удалось выполнить запрос';
 }

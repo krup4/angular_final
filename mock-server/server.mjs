@@ -1,10 +1,13 @@
 import { createServer } from 'node:http';
 import { readFile, writeFile } from 'node:fs/promises';
 import { randomUUID } from 'node:crypto';
+import { createRequire } from 'node:module';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
+const require = createRequire(import.meta.url);
+const { buildSubscription, isBadRequest } = require('./subscription-utils.cjs');
 const dbPath = join(__dirname, 'db.json');
 const port = Number(process.env.MOCK_PORT ?? 3000);
 
@@ -58,7 +61,10 @@ const server = createServer(async (request, response) => {
 
     if (request.method === 'POST' && url.pathname === '/api/subscriptions') {
       const draft = await readBody(request);
-      const created = { ...draft, id: randomUUID(), currency: 'RUB' };
+      const created = buildSubscription(draft, {
+        categories: db.categories,
+        id: randomUUID(),
+      });
       db.subscriptions.push(created);
       await writeDb(db);
       sendJson(response, 201, created);
@@ -69,7 +75,7 @@ const server = createServer(async (request, response) => {
 
     if (subscriptionMatch && request.method === 'PUT') {
       const id = subscriptionMatch[1];
-      const updated = await readBody(request);
+      const draft = await readBody(request);
       const index = db.subscriptions.findIndex((item) => item.id === id);
 
       if (index === -1) {
@@ -77,7 +83,11 @@ const server = createServer(async (request, response) => {
         return;
       }
 
-      db.subscriptions[index] = { ...updated, id };
+      db.subscriptions[index] = buildSubscription(draft, {
+        categories: db.categories,
+        existing: db.subscriptions[index],
+        id,
+      });
       await writeDb(db);
       sendJson(response, 200, db.subscriptions[index]);
       return;
@@ -93,7 +103,9 @@ const server = createServer(async (request, response) => {
 
     sendJson(response, 404, { message: 'Mock route not found' });
   } catch (error) {
-    sendJson(response, 500, { message: error instanceof Error ? error.message : 'Mock server error' });
+    sendJson(response, isBadRequest(error) ? 400 : 500, {
+      message: error instanceof Error ? error.message : 'Mock server error',
+    });
   }
 });
 

@@ -22,7 +22,7 @@ async function loadDb() {
     return cloneDb(readLocalDb());
   }
 
-  const blob = await get(blobPath, { access: 'private' });
+  const blob = await get(blobPath, { access: 'private', useCache: false });
 
   if (!blob) {
     const initialDb = readLocalDb();
@@ -61,6 +61,18 @@ async function saveDb(db) {
 }
 
 function readBody(req) {
+  if (Buffer.isBuffer(req.body)) {
+    return Promise.resolve(req.body.length ? JSON.parse(req.body.toString('utf8')) : {});
+  }
+
+  if (req.body && typeof req.body === 'object') {
+    return Promise.resolve(req.body);
+  }
+
+  if (typeof req.body === 'string') {
+    return Promise.resolve(req.body ? JSON.parse(req.body) : {});
+  }
+
   return new Promise((resolve, reject) => {
     const chunks = [];
 
