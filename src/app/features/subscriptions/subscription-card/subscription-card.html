@@ -1,0 +1,50 @@
+<article class="subscription">
+  <div class="subscription-main">
+    <div>
+      <h3>{{ subscription.title }}</h3>
+      <span>{{ categoryName }}</span>
+    </div>
+    <span tuiBadge [appearance]="subscription.status === 'active' ? 'positive' : 'neutral'">
+      {{ subscription.status === 'active' ? 'Активная' : 'Неактивная' }}
+    </span>
+  </div>
+
+  <dl>
+    <div>
+      <dt>Платеж</dt>
+      <dd>{{ money(subscription.cost) }}</dd>
+    </div>
+    <div>
+      <dt>В месяц</dt>
+      <dd>{{ money(monthlyCost(subscription)) }}</dd>
+    </div>
+    <div>
+      <dt>Следующий</dt>
+      <dd>{{ subscription.nextPaymentDate | date: 'dd.MM.yyyy' }}</dd>
+    </div>
+  </dl>
+
+  <div class="card-actions">
+    <button tuiButton appearance="secondary" size="s" type="button" (click)="edit.emit(subscription)">
+      Изменить
+    </button>
+    <button
+      tuiButton
+      appearance="secondary"
+      size="s"
+      type="button"
+      (click)="toggleStatus.emit(subscription)"
+    >
+      {{ subscription.status === 'active' ? 'Деактивировать' : 'Активировать' }}
+    </button>
+    <button
+      tuiButton
+      appearance="primary-destructive"
+      size="s"
+      type="button"
+      (click)="remove.emit(subscription)"
+    >
+      Удалить
+    </button>
+  </div>
+</article>

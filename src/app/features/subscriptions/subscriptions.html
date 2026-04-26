@@ -136,59 +136,13 @@
       <tui-loader [showLoader]="store.loading()" size="l">
         <div class="cards">
           @for (subscription of store.filteredSubscriptions(); track subscription.id) {
-            <article class="subscription">
-              <div class="subscription-main">
-                <div>
-                  <h3>{{ subscription.title }}</h3>
-                  <span>{{ categoryName(subscription.categoryId) }}</span>
-                </div>
-                <span
-                  tuiBadge
-                  [appearance]="subscription.status === 'active' ? 'positive' : 'neutral'"
-                >
-                  {{ subscription.status === 'active' ? 'Активная' : 'Неактивная' }}
-                </span>
-              </div>
-
-              <dl>
-                <div>
-                  <dt>Платеж</dt>
-                  <dd>{{ money(subscription.cost) }}</dd>
-                </div>
-                <div>
-                  <dt>В месяц</dt>
-                  <dd>{{ money(monthlyCost(subscription)) }}</dd>
-                </div>
-                <div>
-                  <dt>Следующий</dt>
-                  <dd>{{ subscription.nextPaymentDate | date: 'dd.MM.yyyy' }}</dd>
-                </div>
-              </dl>
-
-              <div class="card-actions">
-                <button tuiButton appearance="secondary" size="s" type="button" (click)="edit(subscription)">
-                  Изменить
-                </button>
-                <button
-                  tuiButton
-                  appearance="secondary"
-                  size="s"
-                  type="button"
-                  (click)="toggleStatus(subscription)"
-                >
-                  {{ subscription.status === 'active' ? 'Деактивировать' : 'Активировать' }}
-                </button>
-                <button
-                  tuiButton
-                  appearance="primary-destructive"
-                  size="s"
-                  type="button"
-                  (click)="remove(subscription)"
-                >
-                  Удалить
-                </button>
-              </div>
-            </article>
+            <app-subscription-card
+              [subscription]="subscription"
+              [categoryName]="categoryName(subscription.categoryId)"
+              (edit)="edit($event)"
+              (toggleStatus)="toggleStatus($event)"
+              (remove)="remove($event)"
+            />
           } @empty {
             <p class="empty">Подписок по выбранным фильтрам нет.</p>
           }

@@ -54,66 +54,14 @@
         <h2>Лимиты категорий</h2>
         <div class="list">
           @for (total of store.categoryTotals(); track total.category.id) {
-            <div class="limit">
-              <div class="limit-row">
-                <strong>{{ total.category.name }}</strong>
-                <span [class.danger]="total.isOverLimit">
-                  {{ money(total.total) }} / {{ money(total.category.monthlyLimit) }}
-                </span>
-              </div>
-              <progress
-                tuiProgressBar
-                size="s"
-                max="100"
-                [value]="total.limitUsage > 100 ? 100 : total.limitUsage"
-                [color]="total.isOverLimit ? '#c9524a' : total.category.color"
-                [attr.aria-label]="'Использование лимита ' + total.category.name"
-              ></progress>
-              @if (editingLimitId() === total.category.id) {
-                <form
-                  class="limit-form"
-                  (ngSubmit)="updateLimit(total.category, limit.value)"
-                  aria-label="Изменение лимита категории"
-                >
-                  <label>
-                    Новый лимит
-                    <input
-                      #limit
-                      type="number"
-                      min="0"
-                      step="100"
-                      [value]="total.category.monthlyLimit"
-                      [attr.aria-label]="'Новый лимит ' + total.category.name"
-                    />
-                  </label>
-                  <div class="limit-actions">
-                    <button tuiButton size="s" type="submit" [disabled]="store.saving()">
-                      Сохранить
-                    </button>
-                    <button
-                      tuiButton
-                      appearance="secondary"
-                      size="s"
-                      type="button"
-                      (click)="cancelLimitEdit()"
-                    >
-                      Отмена
-                    </button>
-                  </div>
-                </form>
-              } @else {
-                <button
-                  tuiButton
-                  appearance="secondary"
-                  size="s"
-                  type="button"
-                  class="limit-edit"
-                  (click)="editLimit(total.category.id)"
-                >
-                  Изменить лимит
-                </button>
-              }
-            </div>
+            <app-category-limit-card
+              [total]="total"
+              [editing]="editingLimitId() === total.category.id"
+              [saving]="store.saving()"
+              (edit)="editLimit($event)"
+              (cancelEdit)="cancelLimitEdit()"
+              (save)="updateLimit($event)"
+            />
           }
         </div>
       </article>

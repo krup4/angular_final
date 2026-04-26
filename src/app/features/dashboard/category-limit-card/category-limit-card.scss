@@ -1,0 +1,62 @@
+.limit {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.limit-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: center;
+}
+
+.limit span {
+  color: #61766e;
+}
+
+.limit-form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.5rem;
+  align-items: end;
+}
+
+.limit-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.limit-edit {
+  justify-self: start;
+}
+
+.limit-form label {
+  display: grid;
+  gap: 0.25rem;
+  color: #61766e;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.limit-form input {
+  min-height: 2rem;
+  width: 100%;
+  padding: 0 0.6rem;
+  border: 1px solid #c7d6ce;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #18342c;
+  font: inherit;
+}
+
+.danger {
+  color: #c9524a;
+  font-weight: 800;
+}
+
+@media (max-width: 840px) {
+  .limit-form {
+    grid-template-columns: 1fr;
+  }
+}

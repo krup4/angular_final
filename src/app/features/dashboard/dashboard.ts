@@ -1,15 +1,18 @@
 import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { TuiBadge, TuiProgressBar } from '@taiga-ui/kit';
-import { TuiButton, TuiLoader, TuiNotification } from '@taiga-ui/core';
+import { TuiBadge } from '@taiga-ui/kit';
+import { TuiLoader, TuiNotification } from '@taiga-ui/core';
 import { SubscriptionsStore } from '../../core/api/subscriptions.store';
 import { daysUntil, formatMoney } from '../../shared/utils/subscription-calculations';
 import { Category } from '../../shared/models/subscription.models';
+import {
+  CategoryLimitCardComponent,
+  CategoryLimitUpdate,
+} from './category-limit-card/category-limit-card';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [DatePipe, FormsModule, TuiBadge, TuiButton, TuiLoader, TuiNotification, TuiProgressBar],
+  imports: [CategoryLimitCardComponent, DatePipe, TuiBadge, TuiLoader, TuiNotification],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -44,14 +47,8 @@ export class Dashboard implements OnInit {
     this.editingLimitId.set(null);
   }
 
-  protected async updateLimit(category: Category, value: string): Promise<void> {
-    const monthlyLimit = Number(value);
-
-    if (!Number.isFinite(monthlyLimit) || monthlyLimit < 0) {
-      return;
-    }
-
-    const saved = await this.store.updateCategoryLimit(category.id, monthlyLimit);
+  protected async updateLimit(update: CategoryLimitUpdate): Promise<void> {
+    const saved = await this.store.updateCategoryLimit(update.category.id, update.monthlyLimit);
 
     if (saved) {
       this.editingLimitId.set(null);

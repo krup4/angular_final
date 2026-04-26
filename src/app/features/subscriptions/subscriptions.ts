@@ -1,20 +1,18 @@
 import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
-import { DatePipe } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { TuiBadge } from '@taiga-ui/kit';
 import { TuiButton, TuiLoader, TuiNotification } from '@taiga-ui/core';
 import { SubscriptionsStore } from '../../core/api/subscriptions.store';
+import { SubscriptionCardComponent } from './subscription-card/subscription-card';
 import {
   BillingPeriod,
   Subscription,
   SubscriptionDraft,
   SubscriptionStatus,
 } from '../../shared/models/subscription.models';
-import { formatMoney, monthlyCost } from '../../shared/utils/subscription-calculations';
 
 @Component({
   selector: 'app-subscriptions',
-  imports: [DatePipe, ReactiveFormsModule, TuiBadge, TuiButton, TuiLoader, TuiNotification],
+  imports: [ReactiveFormsModule, SubscriptionCardComponent, TuiButton, TuiLoader, TuiNotification],
   templateUrl: './subscriptions.html',
   styleUrl: './subscriptions.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -24,8 +22,6 @@ export class Subscriptions implements OnInit {
   protected readonly store = inject(SubscriptionsStore);
   protected readonly editing = signal<Subscription | null>(null);
   protected readonly submitted = signal(false);
-  protected readonly money = formatMoney;
-  protected readonly monthlyCost = monthlyCost;
 
   protected readonly periods: Array<{ value: BillingPeriod; label: string }> = [
     { value: 'monthly', label: 'Ежемесячно' },

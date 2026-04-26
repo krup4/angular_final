@@ -19,7 +19,7 @@
       "userId": "user-1",
       "name": "Сервисы",
       "color": "#27725c",
-      "monthlyLimit": 2500
+      "monthlyLimit": 1000
     },
     {
       "id": "cat-entertainment",
@@ -79,18 +79,6 @@
       "categoryId": "cat-demo",
       "status": "active",
       "reminderDaysBefore": 5
-    },
-    {
-      "id": "98aee408-21c8-4a99-9b1e-dee139c83a66",
-      "userId": "user-1",
-      "title": "kjnl",
-      "cost": 999,
-      "currency": "RUB",
-      "billingPeriod": "monthly",
-      "nextPaymentDate": "2026-04-26",
-      "categoryId": "cat-services",
-      "status": "inactive",
-      "reminderDaysBefore": 3
     }
   ]
 }
