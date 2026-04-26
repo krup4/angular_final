@@ -23,6 +23,7 @@ export class Subscriptions implements OnInit {
   private readonly fb = inject(FormBuilder);
   protected readonly store = inject(SubscriptionsStore);
   protected readonly editing = signal<Subscription | null>(null);
+  protected readonly submitted = signal(false);
   protected readonly money = formatMoney;
   protected readonly monthlyCost = monthlyCost;
 
@@ -52,6 +53,7 @@ export class Subscriptions implements OnInit {
 
   protected edit(subscription: Subscription): void {
     this.editing.set(subscription);
+    this.submitted.set(false);
     this.form.setValue({
       title: subscription.title,
       cost: subscription.cost,
@@ -65,6 +67,7 @@ export class Subscriptions implements OnInit {
 
   protected cancelEdit(): void {
     this.editing.set(null);
+    this.submitted.set(false);
     this.form.reset({
       title: '',
       cost: 999,
@@ -77,6 +80,8 @@ export class Subscriptions implements OnInit {
   }
 
   protected async save(): Promise<void> {
+    this.submitted.set(true);
+
     if (this.form.invalid || this.store.saving()) {
       this.form.markAllAsTouched();
 
@@ -94,6 +99,7 @@ export class Subscriptions implements OnInit {
     }
 
     if (saved) {
+      this.submitted.set(false);
       this.cancelEdit();
     }
   }

@@ -7,6 +7,7 @@ import { fileURLToPath } from 'node:url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const require = createRequire(import.meta.url);
+const { buildCategory, isBadRequest: isCategoryBadRequest } = require('./category-utils.cjs');
 const { buildSubscription, isBadRequest } = require('./subscription-utils.cjs');
 const dbPath = join(__dirname, 'db.json');
 const port = Number(process.env.MOCK_PORT ?? 3000);
@@ -47,6 +48,24 @@ const server = createServer(async (request, response) => {
 
     if (request.method === 'GET' && url.pathname === '/api/categories') {
       sendJson(response, 200, db.categories.filter((item) => item.userId === url.searchParams.get('userId')));
+      return;
+    }
+
+    const categoryMatch = url.pathname.match(/^\/api\/categories\/([^/]+)$/);
+
+    if (categoryMatch && request.method === 'PUT') {
+      const id = categoryMatch[1];
+      const draft = await readBody(request);
+      const index = db.categories.findIndex((item) => item.id === id);
+
+      if (index === -1) {
+        sendJson(response, 404, { message: 'Категория не найдена' });
+        return;
+      }
+
+      db.categories[index] = buildCategory(draft, db.categories[index]);
+      await writeDb(db);
+      sendJson(response, 200, db.categories[index]);
       return;
     }
 
@@ -103,7 +122,7 @@ const server = createServer(async (request, response) => {
 
     sendJson(response, 404, { message: 'Mock route not found' });
   } catch (error) {
-    sendJson(response, isBadRequest(error) ? 400 : 500, {
+    sendJson(response, isBadRequest(error) || isCategoryBadRequest(error) ? 400 : 500, {
       message: error instanceof Error ? error.message : 'Mock server error',
     });
   }

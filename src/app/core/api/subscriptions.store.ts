@@ -141,6 +141,25 @@ export const SubscriptionsStore = signalStore(
         patchState(store, { error: getErrorMessage(error), saving: false });
       }
     },
+
+    async updateCategoryLimit(categoryId: string, monthlyLimit: number): Promise<boolean> {
+      patchState(store, { saving: true, error: null });
+
+      try {
+        const updated = await firstValueFrom(api.updateCategoryLimit(categoryId, monthlyLimit));
+
+        patchState(store, {
+          categories: store
+            .categories()
+            .map((category) => (category.id === updated.id ? updated : category)),
+          saving: false,
+        });
+        return true;
+      } catch (error) {
+        patchState(store, { error: getErrorMessage(error), saving: false });
+        return false;
+      }
+    },
   })),
 );
 

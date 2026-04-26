@@ -35,4 +35,8 @@ export class SubscriptionApiService {
   getCategories(userId: string): Observable<Category[]> {
     return this.http.get<Category[]>(`${this.apiUrl}/categories?userId=${userId}`);
   }
+
+  updateCategoryLimit(categoryId: string, monthlyLimit: number): Observable<Category> {
+    return this.http.put<Category>(`${this.apiUrl}/categories/${categoryId}`, { monthlyLimit });
+  }
 }

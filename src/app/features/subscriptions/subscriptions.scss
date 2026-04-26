@@ -81,6 +81,16 @@ select {
   gap: 0.5rem;
 }
 
+.form-warning {
+  margin: 0;
+  padding: 0.7rem 0.85rem;
+  color: #6d4b00;
+  background: #fff6d8;
+  border: 1px solid #efd47c;
+  border-radius: 6px;
+  font-weight: 700;
+}
+
 .filters {
   grid-template-columns: repeat(4, minmax(140px, 1fr));
   margin-bottom: 1rem;

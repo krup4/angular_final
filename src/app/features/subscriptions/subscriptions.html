@@ -66,10 +66,10 @@
         </select>
       </label>
 
-      @if (form.invalid && form.touched) {
-        <tui-notification appearance="warning" size="s">
+      @if (submitted() && form.invalid) {
+        <p class="form-warning" role="alert">
           Заполните название, стоимость, дату платежа и категорию.
-        </tui-notification>
+        </p>
       }
 
       <div class="actions">

@@ -26,7 +26,7 @@
       "userId": "user-1",
       "name": "Развлечения",
       "color": "#5b6fb3",
-      "monthlyLimit": 1800
+      "monthlyLimit": 555
     },
     {
       "id": "cat-utilities",
@@ -44,18 +44,6 @@
     }
   ],
   "subscriptions": [
-    {
-      "id": "sub-github",
-      "userId": "user-1",
-      "title": "GitHub Copilot",
-      "cost": 1000,
-      "currency": "RUB",
-      "billingPeriod": "monthly",
-      "nextPaymentDate": "2026-05-02",
-      "categoryId": "cat-services",
-      "status": "active",
-      "reminderDaysBefore": 5
-    },
     {
       "id": "sub-cloud",
       "userId": "user-1",
@@ -77,7 +65,7 @@
       "billingPeriod": "monthly",
       "nextPaymentDate": "2026-05-10",
       "categoryId": "cat-entertainment",
-      "status": "inactive",
+      "status": "active",
       "reminderDaysBefore": 3
     },
     {
@@ -91,6 +79,18 @@
       "categoryId": "cat-demo",
       "status": "active",
       "reminderDaysBefore": 5
+    },
+    {
+      "id": "98aee408-21c8-4a99-9b1e-dee139c83a66",
+      "userId": "user-1",
+      "title": "kjnl",
+      "cost": 999,
+      "currency": "RUB",
+      "billingPeriod": "monthly",
+      "nextPaymentDate": "2026-04-26",
+      "categoryId": "cat-services",
+      "status": "inactive",
+      "reminderDaysBefore": 3
     }
   ]
 }
