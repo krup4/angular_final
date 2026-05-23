@@ -61,4 +61,9 @@ CI настроен в GitHub Actions: lint, unit tests, build, optional Vercel 
 
 Публичный URL после деплоя: `https://angular-final-94l8.vercel.app/`.
 
+Логин и пароль для входа для теста: <br>
+Логин: `student@example.com` <br>
+Пароль: `password123`
+
+
 Для сохранения mock-данных в Vercel нужен Blob store в том же проекте. После подключения Vercel сам добавит `BLOB_READ_WRITE_TOKEN`, и CRUD перестанет теряться после refresh.
