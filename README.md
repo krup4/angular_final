@@ -58,3 +58,5 @@ CI настроен в GitHub Actions: lint, unit tests, build, optional Vercel 
 - `VERCEL_PROJECT_ID`
 
 Публичный URL после деплоя: `TODO: добавить Vercel URL`.
+
+test commit
